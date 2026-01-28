@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+
 void main() {
   runApp(MyApp());
-
 }
-class  MyApp extends StatelessWidget {
+
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title:'Registration_form';  }
-      Theme: ThemeData(
+      title: 'Registration_form',
+      theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: RegistrationForm(),
-
+    );
+  }
 }
 
 class RegistrationForm extends StatefulWidget {
@@ -20,7 +22,7 @@ class RegistrationForm extends StatefulWidget {
   _RegistrationFormState createState() => _RegistrationFormState();
 }
 
-class _RegistrationFormState extends State<RegistrationForm> {  
+class _RegistrationFormState extends State<RegistrationForm> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -28,37 +30,35 @@ class _RegistrationFormState extends State<RegistrationForm> {
   bool _machineLearning = false;
   bool _fullStack = false;
   bool _mobileApplication = false;
-  double _tution =900.90;
+  double _tution = 900.90;
   String _userNameError = '';
   String _passwordError = '';
   bool _Submitted = false;
   bool _isPasswordVisible = false;
-}
 
-void _validateAndSubmit() {
-  setState() {
-    _userNameError = '';
-    _passwordError = '';
-    _Submitted = false;
-
-    if (_usernameController.text.length != 10) {
-      _userNameError = 'Username must be exactly 10 characters long';
-    }
-    if (_passwordController.text.length < 6) {
-      _passwordError = 'Password must be at least 6 characters long';
-    }
-    if (_userNameError.isEmpty && _passwordError.isEmpty) {
-      _Submitted = true;
-    }
-
-  }
-
-  Future.delayed( Duration(seconds: 2), () {
+  void _validateAndSubmit() {
     setState(() {
+      _userNameError = '';
+      _passwordError = '';
       _Submitted = false;
+
+      if (_usernameController.text.length != 10) {
+        _userNameError = 'Username must be exactly 10 characters long';
+      }
+      if (_passwordController.text.length < 6) {
+        _passwordError = 'Password must be at least 6 characters long';
+      }
+      if (_userNameError.isEmpty && _passwordError.isEmpty) {
+        _Submitted = true;
+      }
     });
 
-  });
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        _Submitted = false;
+      });
+    });
+  }
 
   void _clearForm() {
     setState(() {
@@ -74,7 +74,9 @@ void _validateAndSubmit() {
       _passwordError = '';
     });
   }
-  override Widget build(BuildContext context) {
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Registration Form'),
@@ -111,32 +113,33 @@ void _validateAndSubmit() {
               ),
             ),
             SizedBox(height: 16.0),
-
-            const Text('Sex')
-
+            const Text('Sex'),
             Row(
               children: [
-                Radio<String>(value: 'male', groupValue: _sex, onChanged: (value) {
-                  setState(() {
-                    _sex = value!;
-                  });
+                Radio<String>(
+                  value: 'male',
+                  groupValue: _sex,
+                  onChanged: (value) {
+                    setState(() {
+                      _sex = value!;
+                    });
                   },
-
-                Radio<String>(value: 'female', groupValue: _sex, onChanged: (value) {
-                  setState(() {
-                    _sex = value!;
-                  });
+                ),
+                const Text('Male'),
+                Radio<String>(
+                  value: 'female',
+                  groupValue: _sex,
+                  onChanged: (value) {
+                    setState(() {
+                      _sex = value!;
+                    });
                   },
-                
-                const Text('Female')
+                ),
+                const Text('Female'),
               ],
-              const SizedBox(height: 16.0)
             ),
-
-            const Text('Courses Interested In:'
-
-            )
-
+            const SizedBox(height: 16.0),
+            const Text('Courses Interested In:'),
             CheckboxListTile(
               title: const Text('Machine Learning'),
               value: _machineLearning,
@@ -146,7 +149,6 @@ void _validateAndSubmit() {
                 });
               },
             ),
-
             CheckboxListTile(
               title: const Text('Full Stack'),
               value: _fullStack,
@@ -156,7 +158,6 @@ void _validateAndSubmit() {
                 });
               },
             ),
-
             CheckboxListTile(
               title: const Text('Mobile Application'),
               value: _mobileApplication,
@@ -166,7 +167,6 @@ void _validateAndSubmit() {
                 });
               },
             ),
-
             const SizedBox(height: 16.0),
             const Text('Tution Fee:'),
             Slider(
@@ -181,19 +181,19 @@ void _validateAndSubmit() {
                 });
               },
             ),
-
-            Row(children: [
-              ElevatedButton(
-                onPressed: _validateAndSubmit,
-                child: const Text('Submit'),
-              ),
-              const SizedBox(width: 16.0),
-              ElevatedButton(
-                onPressed: _clearForm,
-                child: const Text('Clear'),
-              ),
-            ],)
-
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: _validateAndSubmit,
+                  child: const Text('Submit'),
+                ),
+                const SizedBox(width: 16.0),
+                ElevatedButton(
+                  onPressed: _clearForm,
+                  child: const Text('Clear'),
+                ),
+              ],
+            ),
             const SizedBox(height: 16.0),
             if (_Submitted)
               const Text(
@@ -201,13 +201,15 @@ void _validateAndSubmit() {
                 style: TextStyle(color: Colors.green, fontSize: 16.0),
               ),
           ],
+        ),
+      ),
+    );
+  }
 
-          @override
-          void dispose() {
-          _usernameController.dispose();
-          _passwordController.dispose();
-          super.dispose();
-          }
-
-
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 }
