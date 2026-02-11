@@ -138,6 +138,12 @@ class RegistrationFormState extends State<RegistrationForm> {
             TextField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
+              onChanged: (value) {
+                setState(() {
+                  final error = _validateEmail(value);
+                  _emailError = error ?? '';
+                });
+              },
               decoration: InputDecoration(
                 labelText: 'Email',
                 hintText: 'user@example.com',
@@ -148,6 +154,12 @@ class RegistrationFormState extends State<RegistrationForm> {
             TextField(
               controller: _passwordController,
               obscureText: !_isPasswordVisible,
+              onChanged: (value) {
+                setState(() {
+                  final error = _validatePassword(value);
+                  _passwordError = error ?? '';
+                });
+              },
               decoration: InputDecoration(
                 labelText: 'Password',
                 errorText: _passwordError.isNotEmpty ? _passwordError : null,

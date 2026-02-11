@@ -8,6 +8,7 @@
 | Samuel Rurangamirwa       |
 | Justine Neema             |
 | Belissa Muyizere          |
+| Glorie Gwiza              |
 
 A new Flutter project.
 
