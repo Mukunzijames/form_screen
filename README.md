@@ -1,11 +1,14 @@
 # form_screen
 ## collaborators
 
-Mukunzi Ndahiro James
-Dan Dushime
-Samuel Rurangamirwa
-Justine Neema
-Belissa muyizere
+| Collaborator              |
+|---------------------------|
+| Mukunzi Ndahiro James     |
+| Dan Dushime               |
+| Samuel Rurangamirwa       |
+| Justine Neema             |
+| Belissa Muyizere          |
+
 A new Flutter project.
 
 ## Getting Started
