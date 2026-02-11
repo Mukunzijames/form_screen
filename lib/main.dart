@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,65 +14,112 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: RegistrationForm(),
+      home: const RegistrationForm(),
     );
   }
 }
 
 class RegistrationForm extends StatefulWidget {
+  const RegistrationForm({super.key});
+
   @override
-  _RegistrationFormState createState() => _RegistrationFormState();
+  RegistrationFormState createState() => RegistrationFormState();
 }
 
-class _RegistrationFormState extends State<RegistrationForm> {
-  final TextEditingController _usernameController = TextEditingController();
+class RegistrationFormState extends State<RegistrationForm> {
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  // Regex: valid email with @ and domain (e.g. user@example.com)
+  final RegExp _emailRegex = RegExp(
+    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+  );
+
+  // Regex: at least one digit
+  final RegExp _passwordNumberRegex = RegExp(r'[0-9]');
+
+  // Regex: at least one special symbol
+  final RegExp _passwordSymbolRegex = RegExp(r'[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/~`]');
 
   String _sex = 'male';
   bool _machineLearning = false;
   bool _fullStack = false;
   bool _mobileApplication = false;
   double _tution = 900.90;
-  String _userNameError = '';
+  String _emailError = '';
   String _passwordError = '';
-  bool _Submitted = false;
+  bool _submitted = false;
   bool _isPasswordVisible = false;
+
+  String? _validateEmail(String email) {
+    if (email.isEmpty) {
+      return 'Email is required';
+    }
+    if (!_emailRegex.hasMatch(email)) {
+      return 'Enter a valid email (e.g. user@example.com)';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String password) {
+    if (password.isEmpty) {
+      return 'Password is required';
+    }
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    if (!_passwordNumberRegex.hasMatch(password)) {
+      return 'Password must contain at least one number';
+    }
+    if (!_passwordSymbolRegex.hasMatch(password)) {
+      return 'Password must contain at least one symbol (!@#\$%^&* etc.)';
+    }
+    return null;
+  }
 
   void _validateAndSubmit() {
     setState(() {
-      _userNameError = '';
+      _emailError = '';
       _passwordError = '';
-      _Submitted = false;
+      _submitted = false;
 
-      if (_usernameController.text.length != 10) {
-        _userNameError = 'Username must be exactly 10 characters long';
+      final emailError = _validateEmail(_emailController.text);
+      if (emailError != null) {
+        _emailError = emailError;
       }
-      if (_passwordController.text.length < 6) {
-        _passwordError = 'Password must be at least 6 characters long';
+
+      final passwordError = _validatePassword(_passwordController.text);
+      if (passwordError != null) {
+        _passwordError = passwordError;
       }
-      if (_userNameError.isEmpty && _passwordError.isEmpty) {
-        _Submitted = true;
+
+      if (_emailError.isEmpty && _passwordError.isEmpty) {
+        _submitted = true;
       }
     });
 
-    Future.delayed(Duration(seconds: 2), () {
-      setState(() {
-        _Submitted = false;
+    if (_submitted) {
+      Future.delayed(Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _submitted = false;
+          });
+        }
       });
-    });
+    }
   }
 
   void _clearForm() {
     setState(() {
-      _usernameController.clear();
+      _emailController.clear();
       _passwordController.clear();
       _sex = 'male';
       _machineLearning = false;
       _fullStack = false;
       _mobileApplication = false;
       _tution = 900.90;
-      _Submitted = false;
-      _userNameError = '';
+      _submitted = false;
+      _emailError = '';
       _passwordError = '';
     });
   }
@@ -87,10 +136,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-              controller: _usernameController,
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                labelText: 'Username',
-                errorText: _userNameError.isNotEmpty ? _userNameError : null,
+                labelText: 'Email',
+                hintText: 'user@example.com',
+                errorText: _emailError.isNotEmpty ? _emailError : null,
               ),
             ),
             SizedBox(height: 16.0),
@@ -114,29 +165,21 @@ class _RegistrationFormState extends State<RegistrationForm> {
             ),
             SizedBox(height: 16.0),
             const Text('Sex'),
-            Row(
-              children: [
-                Radio<String>(
-                  value: 'male',
-                  groupValue: _sex,
-                  onChanged: (value) {
-                    setState(() {
-                      _sex = value!;
-                    });
-                  },
-                ),
-                const Text('Male'),
-                Radio<String>(
-                  value: 'female',
-                  groupValue: _sex,
-                  onChanged: (value) {
-                    setState(() {
-                      _sex = value!;
-                    });
-                  },
-                ),
-                const Text('Female'),
-              ],
+            RadioGroup<String>(
+              groupValue: _sex,
+              onChanged: (value) {
+                setState(() {
+                  _sex = value!;
+                });
+              },
+              child: Row(
+                children: [
+                  Radio<String>(value: 'male'),
+                  const Text('Male'),
+                  Radio<String>(value: 'female'),
+                  const Text('Female'),
+                ],
+              ),
             ),
             const SizedBox(height: 16.0),
             const Text('Courses Interested In:'),
@@ -195,7 +238,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               ],
             ),
             const SizedBox(height: 16.0),
-            if (_Submitted)
+            if (_submitted)
               const Text(
                 'Form Submitted Successfully!',
                 style: TextStyle(color: Colors.green, fontSize: 16.0),
@@ -208,7 +251,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
